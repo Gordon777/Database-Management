@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class _Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void Button1_Click1(object sender, EventArgs e)
+    {
+        string CS = ConfigurationManager.ConnectionStrings["DBCS"].ConnectionString;
+        using (SqlConnection con = new SqlConnection(CS))
+        {
+            SqlCommand cmd = new SqlCommand("查詢路段時速", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@intersection_id", TextBox1.Text);//insert value
+            cmd.Parameters.AddWithValue("@tollgate_id", TextBox2.Text);
+
+            SqlParameter outputParameter = new SqlParameter();
+            outputParameter.ParameterName = "@intersection_id";
+            outputParameter.SqlDbType = System.Data.SqlDbType.VarChar;
+            outputParameter.Direction = System.Data.ParameterDirection.Output;
+            cmd.Parameters.Add(outputParameter);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+
+            string intersection_id = outputParameter.Value.ToString();
+            Label4.Text = "intersection_id = " + intersection_id;
+        }
+    }
+}
